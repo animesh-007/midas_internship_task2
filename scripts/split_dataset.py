@@ -6,19 +6,16 @@ import argparse
 import random
 random.seed(230)
 
-
-
 parser = argparse.ArgumentParser(description='Split Midas task 1 dataset')
 parser.add_argument(
         "--path",
         nargs="?",
         type=str,
-        default="./midas_task_1_data",
-        help="Path to the dataset",
+        default="../subtask1",
+        help="Path to the dataset and splitting in same folder",
     )
 args = parser.parse_args()
-path = args.path + "/*"
-print(path)
+path = args.path + "/train/*"
 
 
 for folder in tqdm(glob(path)):
@@ -31,8 +28,8 @@ for folder in tqdm(glob(path)):
     train_filenames = files[:split_1]
     val_filenames = files[split_1:]
     folder_name = os.path.split(folder)[-1]
-    train_destination = f"../train/{folder_name}"
-    val_destination = f"../val/{folder_name}"
+    train_destination = f"{args.path}/processed/train/{folder_name}"
+    val_destination = f"{args.path}/processed/val/{folder_name}"
     
     os.makedirs(train_destination,exist_ok=True)
     os.makedirs(val_destination,exist_ok=True)
