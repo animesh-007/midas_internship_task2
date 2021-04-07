@@ -9,6 +9,7 @@ import torch.optim as optim
 import torchvision
 from torchvision import datasets, transforms
 from torch.optim.lr_scheduler import StepLR
+from cosine_annearing_with_warmup import CosineAnnealingWarmupRestarts
 from PIL import ImageOps
 import wandb
 
@@ -71,11 +72,8 @@ def test(model, device, test_loader,args):
         for data, target in test_loader:
             data, target = data.to(device), target.to(device)
             output = model(data)
-            criterion = nn.BCEWithLogitsLoss()
-            target = target.type_as(output)
-            test_loss += criterion(output, target)  # sum up batch loss
+            test_loss += F.nll_loss(output, target, reduction='sum').item()  # sum up batch loss
             pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
-            target = target.argmax(dim=1)
             correct += pred.eq(target.view_as(pred)).sum().item()
             if args.wandb:
                 example_images.append(wandb.Image(
@@ -94,7 +92,7 @@ def test(model, device, test_loader,args):
             "Examples": example_images,
             "Test Accuracy": 100. * correct / len(test_loader.dataset),
             "Test Loss": test_loss})
-    
+
     return accuracy
 
 def accuracy_per_class(net, classes, device, testloader,args):
@@ -105,7 +103,6 @@ def accuracy_per_class(net, classes, device, testloader,args):
             images, labels = data.to(device), target.to(device)
             outputs = net(images)
             _, predicted = torch.max(outputs, 1)
-            labels = labels.argmax(dim=1)
             c = (predicted == labels).squeeze()
             
             for i in range(len(labels)):
@@ -115,6 +112,7 @@ def accuracy_per_class(net, classes, device, testloader,args):
 
     accuracies = []
     accuracy = 0
+    # import pdb; pdb.set_trace()
     for i in range(len(classes)):
         accuracy = 100 * class_correct[i] / class_total[i]
         print('Accuracy of %5s : %2d %%' % (
@@ -224,6 +222,7 @@ def main():
                            transform=test_transforms_mnist)
     else:
         transform=transforms.Compose([
+        transforms.CenterCrop((900,900)),
         ImageOps.invert,
         transforms.Grayscale(num_output_channels=1),
         transforms.Resize((28,28)),                                     
@@ -258,7 +257,8 @@ def main():
     optimizer = optim.Adadelta(model.parameters(), lr=args.lr)
     criterion = nn.CrossEntropyLoss()
 
-    scheduler = StepLR(optimizer, step_size=1, gamma=args.gamma)
+    scheduler = CosineAnnealingWarmupRestarts(optimizer, first_cycle_steps=200,max_lr=1, gamma=args.gamma)
+    
     
     if args.load_ckpt:
         print(f'=> loading checkpoint {args.saved_ckpt}/run_with_{args.epochs}_LR_{args.lr}')
@@ -288,7 +288,9 @@ def main():
         accu = test(model, device, test_loader, args)
         print("==> Accuracy per class")
         accuracy_per_class(model, classes, device, test_loader,args)
-        
+        scheduler.step()
+        print("Lr after scheduler = ",optimizer.param_groups[0]['lr'])
+
         is_best = accu > best_accu
 
         print("==> Saving model checkpoint")
