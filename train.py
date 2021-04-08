@@ -52,6 +52,13 @@ def main():
 
     args = parser.parse_args()
 
+    if args.wandb:
+        # wandb initalization
+        print("==> wandb initalization of project")
+        wandb.init(project="midas-tasks-solutions", reinit=True)
+        wandb.config.update(args)
+    
+
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     os.makedirs(f'{args.saved_ckpt}', exist_ok = True)
@@ -70,7 +77,7 @@ def main():
         test_kwargs.update(cuda_kwargs)
 
     
-    midas_train, midas_val = midas_task1_split(args.path)
+    midas_train, midas_val = midas_task1_split(args.path+"/processed")
     mnist_test = mnist_testloader()
 
     midas_train_loader = torch.utils.data.DataLoader(midas_train, **train_kwargs)
@@ -87,15 +94,20 @@ def main():
     
     scheduler = StepLR(optimizer, step_size=1, gamma=args.gamma)
 
+    if args.wandb:
+        wandb.watch(midas_model)
+        wandb.watch(mnist_model)
+
+
     
     for epoch in range(1, args.epochs + 1):
         print(f"==> Epoch {epoch}/{args.epochs + 1}")
         print("==> Model training started")
 
         train(args, midas_model, device, midas_train_loader, optimizer, epoch,criterion)
+        
         print("==> Evaluating midas model on midas")
-
-        midas_accu = test(midas_model, device, midas_val_loader, args,criterion)
+        midas_accu = val_midas(midas_model, device, midas_val_loader, args,criterion,epoch)
         
 
         print("==> Saving model checkpoint")
@@ -114,13 +126,10 @@ def main():
         print(mnist_model)
 
         print("==> Testing model on mnist")
-        mnist_accu = test(mnist_model, device, mnist_test_loader, args,criterion)
+        mnist_accu = test(mnist_model, device, mnist_test_loader, args,criterion,epoch)
 
         print("==> Accuracy per class on midas val")
-        accuracy_per_class(midas_model,midas_val.classes, device, midas_val_loader,args)
-
-        print("==> Accuracy per class")
-        accuracy_per_class(midas_model, midas_val.classes, device, midas_val_loader,args)
+        accuracy_per_class(midas_model,midas_val.classes, device, midas_val_loader,args,epoch)
 
         scheduler.step()
         print("Lr after scheduler = ",optimizer.param_groups[0]['lr'])
@@ -135,6 +144,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-

@@ -4,6 +4,7 @@ import torch
 from torchvision import datasets, transforms
 from tqdm import tqdm
 from PIL import ImageOps
+import wandb
 
 def train(args, model, device, train_loader, optimizer, epoch,criterion):
     model.train()
@@ -36,7 +37,7 @@ def train(args, model, device, train_loader, optimizer, epoch,criterion):
     
     return accuracy
 
-def test(model, device, test_loader,args,criterion):
+def val_midas(model, device, test_loader,args,criterion,epoch):
     model.eval()
     test_loss = 0
     correct = 0
@@ -57,7 +58,41 @@ def test(model, device, test_loader,args,criterion):
     
     accuracy = 100. * correct / len(test_loader.dataset)
 
-    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+    print('\n Val set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+        test_loss, correct, len(test_loader.dataset),
+        accuracy))
+    
+    if args.wandb:
+        wandb.log({
+            "Examples": example_images,
+            "Val Accuracy": 100. * correct / len(test_loader.dataset),
+            "Val Loss": test_loss}, step = epoch)
+
+    return accuracy
+
+
+def test(model, device, test_loader,args,criterion,epoch):
+    model.eval()
+    test_loss = 0
+    correct = 0
+    example_images = []
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            test_loss += criterion(output, target).item()  # sum up batch loss
+            pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+            correct += pred.eq(target.view_as(pred)).sum().item()
+            
+            if args.wandb:
+                example_images.append(wandb.Image(
+                    data[0], caption="Pred: {} Truth: {}".format(pred[0].item(), target[0])))
+
+    test_loss /= len(test_loader.dataset)
+    
+    accuracy = 100. * correct / len(test_loader.dataset)
+
+    print('\n Test set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
         accuracy))
     
@@ -69,7 +104,7 @@ def test(model, device, test_loader,args,criterion):
 
     return accuracy
 
-def accuracy_per_class(net, classes, device, testloader,args):
+def accuracy_per_class(net, classes, device, testloader,args,epoch):
     class_correct = list(0. for i in range(len(classes)))
     class_total = list(0. for i in range(len(classes)))
     with torch.no_grad():
@@ -168,9 +203,3 @@ def load_ckpt(model, args):
     print(f'=> loaded checkpoint {args.saved_ckpt}')
 
     return model
-
-    
-
-
-
-        
