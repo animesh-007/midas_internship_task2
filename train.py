@@ -9,15 +9,44 @@ from torch.optim.lr_scheduler import StepLR
 import wandb
 from utils import *
 from model_nologsoftmax.model_nologsoftmax import *
+from cosine_annearing_with_warmup import CosineAnnealingWarmupRestarts
+# from model_logsoftmax.task1_model import Net3
 
 torch.backends.cudnn.deterministic = True
 torch.manual_seed(hash("by removing stochasticity") % 2**32 - 1)
 torch.cuda.manual_seed_all(hash("so runs are repeatable") % 2**32 - 1)
 
+class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        self.conv1 = nn.Conv2d(1, 32, 3, 1)
+        self.conv2 = nn.Conv2d(32, 64, 3, 1)
+        self.dropout1 = nn.Dropout(0.25)
+        self.dropout2 = nn.Dropout(0.5)
+        self.fc1 = nn.Linear(9216, 128)
+        self.fc2 = nn.Linear(128, 62)
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = F.relu(x)
+        x = self.conv2(x)
+        x = F.relu(x)
+        x = F.max_pool2d(x, 2)
+        x = self.dropout1(x)
+        x = torch.flatten(x, 1)
+        x = self.fc1(x)
+        x = F.relu(x)
+        x = self.dropout2(x)
+        x = self.fc2(x)
+        # output = F.log_softmax(x, dim=1)
+        # return output
+        return x
+
 
 
 def main():
     best_accu = 0
+
     
     # Training settings
     parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
@@ -58,7 +87,6 @@ def main():
         wandb.init(project="midas-tasks-solutions", reinit=True)
         wandb.config.update(args)
     
-
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     os.makedirs(f'{args.saved_ckpt}', exist_ok = True)
@@ -67,6 +95,7 @@ def main():
 
     print("==> Loading dataset")
     train_kwargs = {'batch_size': args.batch_size}
+    val_kwargs = {'batch_size': args.batch_size}
     test_kwargs = {'batch_size': args.batch_size}
     
     if torch.cuda.is_available():
@@ -74,32 +103,33 @@ def main():
                        'pin_memory': True,
                        'shuffle': True}
         train_kwargs.update(cuda_kwargs)
-        test_kwargs.update(cuda_kwargs)
-
-    
+        
+    print("==> Loading Midas dataset")
     midas_train, midas_val = midas_task1_split(args.path+"/processed")
+    print("==> Loading MNIST test dataset")
     mnist_test = mnist_testloader()
 
     midas_train_loader = torch.utils.data.DataLoader(midas_train, **train_kwargs)
-    midas_val_loader = torch.utils.data.DataLoader(midas_val, **train_kwargs)
+    midas_val_loader = torch.utils.data.DataLoader(midas_val, **val_kwargs)
     mnist_test_loader = torch.utils.data.DataLoader(mnist_test, **test_kwargs)
 
     print("==> Building model...")
-    midas_model = Net3().to(device)
+    midas_model = Net().to(device)
 
-    mnist_model = Net3().to(device)
+    mnist_model = Net().to(device)
 
-    optimizer = optim.Adam(midas_model.parameters(), lr=args.lr)
+    optimizer = optim.Adadelta(midas_model.parameters(), lr=args.lr)
     criterion = nn.CrossEntropyLoss()
+    # criterion = nn.NLLLoss()
     
     scheduler = StepLR(optimizer, step_size=1, gamma=args.gamma)
-
+    # scheduler = CosineAnnealingWarmupRestarts(optimizer, first_cycle_steps=200, cycle_mult=1.0, max_lr=1, min_lr=args.lr, warmup_steps=50, gamma=0.5)
     if args.wandb:
         wandb.watch(midas_model)
         wandb.watch(mnist_model)
 
 
-    
+    print(f"==> Starting Learning Rate {args.lr}")
     for epoch in range(1, args.epochs + 1):
         print(f"==> Epoch {epoch}/{args.epochs + 1}")
         print("==> Model training started")
@@ -110,7 +140,7 @@ def main():
         midas_accu = val_midas(midas_model, device, midas_val_loader, args,criterion,epoch)
         
 
-        print("==> Saving model checkpoint")
+        print(f"==> Saving model checkpoint at {fdir}")
         is_best = midas_accu > best_accu
         best_accu = max(midas_accu,best_accu)
         save_checkpoint({
@@ -122,7 +152,7 @@ def main():
 
         print("==> Loading model checkpoint")
         mnist_model = load_ckpt(mnist_model, args)
-        mnist_model.fc2.out_channels = 10
+        mnist_model.fc2.out_features = 10
         print(mnist_model)
 
         print("==> Testing model on mnist")
@@ -134,8 +164,8 @@ def main():
         scheduler.step()
         print("Lr after scheduler = ",optimizer.param_groups[0]['lr'])
         
-        if args.wandb:
-            wandb.log({"Lr": optimizer.param_groups[0]['lr']}, step = epoch)
+        # if args.wandb:
+        #     wandb.log({"Lr": optimizer.param_groups[0]['lr']}, step = epoch)
 
         
     

@@ -140,7 +140,7 @@ def mnist_trainloader():
     transforms.ToTensor(),
     transforms.Normalize((0.1307,), (0.3081,))])
     
-    dataset1 = datasets.MNIST('../MNIST',train=True,download=True,
+    dataset1 = datasets.MNIST('./MNIST',train=True,download=True,
                         transform=mnist_ransforms)
     return dataset1
 
@@ -150,7 +150,7 @@ def mnist_testloader():
     transforms.ToTensor(),
     transforms.Normalize((0.1307,), (0.3081,))])
     
-    dataset2 = datasets.MNIST('../MNIST',train=False,download=True,
+    dataset2 = datasets.MNIST('./MNIST',train=False,download=True,
                         transform=mnist_ransforms)
 
     return dataset2
@@ -173,7 +173,7 @@ def midas_task1_split(path):
     
     return dataset1, dataset2
 
-def midas_full_dataset(path):
+def midas_full_digits_dataset(path):
     transform=transforms.Compose([
         transforms.CenterCrop((900,900)),
         ImageOps.invert,
