@@ -33,7 +33,7 @@ def train(args, model, device, train_loader, optimizer, epoch,criterion):
     accuracy))
 
     if args.wandb:
-        wandb.log({"Train Loss": train_loss, "Train Accuracy": accuracy}, step = epoch)
+        wandb.log({"Train Loss": train_loss, "Train Accuracy": accuracy,"Lr": optimizer.param_groups[0]['lr']}, step = epoch)
     
     return accuracy
 
@@ -188,6 +188,17 @@ def midas_full_digits_dataset(path):
 
     return dataset1
 
+def midas_mnist_trainloader(path):
+
+    mnist_ransforms=transforms.Compose([
+    transforms.Grayscale(num_output_channels=1),
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,))])
+    
+    dataset1 = datasets.ImageFolder(f'{path}/mnistTask',
+                        transform=mnist_ransforms)
+    return dataset1
+
 def save_checkpoint(state, is_best, fdir):
     filepath = os.path.join(fdir, 'checkpoint.pth')
     torch.save(state, filepath)
@@ -196,10 +207,8 @@ def save_checkpoint(state, is_best, fdir):
 
 def load_ckpt(model, args):
     
-    print(f'=> loading checkpoint from {args.saved_ckpt}')
+    print(f'=> loading checkpoint from {args.saved_ckpt}/run_with_epochs_{args.epochs}_LR_{args.lr}')
     checkpoint = torch.load(f"{args.saved_ckpt}/run_with_epochs_{args.epochs}_LR_{args.lr}/checkpoint_model_best.pth.tar")
     model.load_state_dict(checkpoint['state_dict'])
     # optimizer.load_state_dict(checkpoint['optimizer'])
-    print(f'=> loaded checkpoint {args.saved_ckpt}')
-
-    return model
+    print(f'=> loaded checkpoint {args.saved_ckpt}/run_with_epochs_{args.epochs}_LR_{args.lr}')

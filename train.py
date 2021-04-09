@@ -10,6 +10,8 @@ import wandb
 from utils import *
 from model_nologsoftmax.model_nologsoftmax import *
 from cosine_annearing_with_warmup import CosineAnnealingWarmupRestarts
+import warnings
+warnings.filterwarnings("ignore")
 # from model_logsoftmax.task1_model import Net3
 
 torch.backends.cudnn.deterministic = True
@@ -86,7 +88,10 @@ def main():
         print("==> wandb initalization of project")
         wandb.init(project="midas-tasks-solutions", reinit=True)
         wandb.config.update(args)
+
     
+    
+
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     os.makedirs(f'{args.saved_ckpt}', exist_ok = True)
@@ -104,26 +109,44 @@ def main():
                        'shuffle': True}
         train_kwargs.update(cuda_kwargs)
         
+
     print("==> Loading Midas dataset")
     midas_train, midas_val = midas_task1_split(args.path+"/processed")
-    print("==> Loading MNIST test dataset")
+    # midas_train = midas_mnist_trainloader(args.path) 
+    # midas_train = midas_full_digits_dataset(args.path)
+
+    print("==> Loading MNIST dataset")
+    # mnist_train = mnist_trainloader()
     mnist_test = mnist_testloader()
 
     midas_train_loader = torch.utils.data.DataLoader(midas_train, **train_kwargs)
+    # midas_train_loader = torch.utils.data.DataLoader(midas_train, **train_kwargs)
     midas_val_loader = torch.utils.data.DataLoader(midas_val, **val_kwargs)
-    mnist_test_loader = torch.utils.data.DataLoader(mnist_test, **test_kwargs)
+    # train_loader = torch.utils.data.DataLoader(midas_train, **train_kwargs)
+    test_loader = torch.utils.data.DataLoader(mnist_test, **test_kwargs)
 
     print("==> Building model...")
     midas_model = Net().to(device)
 
+    # print("==> Loading model checkpoint")
+    # load_ckpt(midas_model, args)
+    # midas_model.fc2.out_features = 10
+    print(midas_model)
     mnist_model = Net().to(device)
+    # print(mnist_model)
 
     optimizer = optim.Adadelta(midas_model.parameters(), lr=args.lr)
     criterion = nn.CrossEntropyLoss()
     # criterion = nn.NLLLoss()
     
-    scheduler = StepLR(optimizer, step_size=1, gamma=args.gamma)
-    # scheduler = CosineAnnealingWarmupRestarts(optimizer, first_cycle_steps=200, cycle_mult=1.0, max_lr=1, min_lr=args.lr, warmup_steps=50, gamma=0.5)
+    # scheduler = StepLR(optimizer, step_size=1, gamma=args.gamma)
+    scheduler = CosineAnnealingWarmupRestarts(optimizer,
+                                          first_cycle_steps=args.epochs,
+                                          cycle_mult=1.0,
+                                          max_lr=1.0,
+                                          min_lr=args.lr,
+                                          warmup_steps=5,
+                                          gamma=1.0)    
     if args.wandb:
         wandb.watch(midas_model)
         wandb.watch(mnist_model)
@@ -138,7 +161,6 @@ def main():
         
         print("==> Evaluating midas model on midas")
         midas_accu = val_midas(midas_model, device, midas_val_loader, args,criterion,epoch)
-        
 
         print(f"==> Saving model checkpoint at {fdir}")
         is_best = midas_accu > best_accu
@@ -149,17 +171,32 @@ def main():
             'best_accu': best_accu,
             'optimizer': optimizer.state_dict(),
         }, is_best, fdir)
+        
+
 
         print("==> Loading model checkpoint")
-        mnist_model = load_ckpt(mnist_model, args)
+        load_ckpt(mnist_model, args)
         mnist_model.fc2.out_features = 10
         print(mnist_model)
 
         print("==> Testing model on mnist")
-        mnist_accu = test(mnist_model, device, mnist_test_loader, args,criterion,epoch)
+        mnist_accu = test(mnist_model, device, test_loader, args,criterion,epoch)
+
+        # print(f"==> Saving model checkpoint at {fdir}")
+        # is_best = midas_accu > best_accu
+        # best_accu = max(midas_accu,best_accu)
+        # save_checkpoint({
+        #     'epoch': epoch + 1,
+        #     'state_dict': midas_model.state_dict(),
+        #     'best_accu': best_accu,
+        #     'optimizer': optimizer.state_dict(),
+        # }, is_best, fdir)
 
         print("==> Accuracy per class on midas val")
         accuracy_per_class(midas_model,midas_val.classes, device, midas_val_loader,args,epoch)
+
+        # print("==> Accuracy per class on mnist test")
+        # accuracy_per_class(midas_model,mnist_test.classes, device, test_loader,args,epoch)
 
         scheduler.step()
         print("Lr after scheduler = ",optimizer.param_groups[0]['lr'])
