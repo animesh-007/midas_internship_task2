@@ -13,7 +13,7 @@ parser.add_argument(
         "--path",
         nargs="?",
         type=str,
-        default="../subtask1",
+        default="./subtask1_data",
         help="Path to the dataset and splitting in same folder",
     )
 args = parser.parse_args()
