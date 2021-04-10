@@ -100,7 +100,7 @@ def main():
         
 
     print("==> Loading Midas dataset")
-    midas_train, midas_val = midas_task1_split(args.path+"/processed")
+    midas_train, midas_val = midas_task1_split(args.path)
 
     print("==> Loading MNIST dataset")
     mnist_test = mnist_testloader()
