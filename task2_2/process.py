@@ -6,30 +6,30 @@ from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description='Split Midas task 2 dataset')
 parser.add_argument(
-        "--subtask2",
+        "--path",
         nargs="?",
         type=str,
-        default="./subtask2_data/train",
+        default="../task2_1/downloadeddata/train",
         help="Path to store the dataset",
     )
 parser.add_argument(
-        "--subtask1",
+        "--path2",
         nargs="?",
         type=str,
-        default="../subtask1_downloadeddata/train",
+        default="./data/train",
         help="Path to the subtask1 dataset",
     )
 args = parser.parse_args()
 
-folders = (natsorted(glob(args.subtask1+"/*")))
+folders = (natsorted(glob(args.path+"/*")))
 
 folders = folders[0:10]
 
-os.makedirs(args.subtask2,exist_ok=True)
+os.makedirs(args.path2,exist_ok=True)
 
 for folder in folders:
     print(folder)
-    train_destination = f"{args.subtask2}/{os.path.split(folder)[-1]}"
+    train_destination = f"{args.path2}/{os.path.split(folder)[-1]}"
     shutil.copytree(folder,train_destination)
 
 
