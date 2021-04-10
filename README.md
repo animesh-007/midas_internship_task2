@@ -58,3 +58,6 @@ Change directory to Task2_3 using `cd task2_3`
 |---------------------------------------------------------------------------------------	|:--------:	|
 | CNN on MIDAS Dataset with random weights.                                             	|    1.74      	|
 | CNN on MIDAS Dataset with pretrained weights of<br> MIDAS dataset containing only digits. 	|       10.32   	|
+
+### Model Checkpoints
+
