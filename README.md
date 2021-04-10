@@ -14,6 +14,8 @@ pip install requirements.txt
 ## Network Architecture
 The network architecture below is used for all the 3 subtasks by changing the last layer of the architecture.
 
+<img src="https://github.com/animesh-007/midas_internship_task2/blob/master/images/architecture.png">
+
 ## Task2_1
 Change directory to Task2_1 using `cd task2_1`
 ### Prepare data
@@ -25,10 +27,10 @@ Change directory to Task2_1 using `cd task2_1`
 - For Training the model from scratch on the Task2_1 dataset. Run `python train.py`
 
 ### Results
-|                Method                	| Epochs 	|  LR  	| Accuracy 	|
-|:------------------------------------:	|:------:	|------	|:--------:	|
-| CNN without Scheduler                	|   30   	|   1  	|  67.94  	|
-| CNN with CosineAnnealingLR Scheduler 	|   30   	|   1  	|  68.75  	|
+|                Method                	| Epochs  | Accuracy 	|
+|:------------------------------------:	|:------: |:--------:	|
+| CNN without Scheduler                	|   30  	|  67.94  	|
+| CNN with CosineAnnealingLR Scheduler 	|   30  	|  68.75  	|
 
 ## Task2_2
 Change directory to Task2_2 using `cd task2_2`
@@ -40,14 +42,11 @@ Change directory to Task2_2 using `cd task2_2`
 - For Training the model from scratch on the Task2_3 dataset. Run `python train.py`
 
 ### Results
-|                                      Method                                      	| Epochs 	|  LR  	| Accuracy 	|
-|--------------------------------------------------------------------------------	|:------:	|:------:	|:--------:	|
-| CNN on MIDAS dataset containing only digits, with a CosineAnnealingLR scheduler	|   30   	|   1  	|   66.36  	|
-| CNN on MNIST dataset with random weights, with a CosineAnnealingLR scheduler.	 	|   30   	|   1  	|   99.39  	|
-| CNN on MNIST dataset with pretrained weights, with a CosineAnnealingLR scheduler|   30   	|   1  	|   99.34 	|
-
-### Visualization
-Graph below shows comparison in terms of model accuracy between model trained with random weights and model trained with pretrained weights
+|                                      Method                                      	| Epochs| Accuracy 	|
+|--------------------------------------------------------------------------------	|:------: |:--------:	|
+| CNN on MIDAS dataset containing only digits, with a CosineAnnealingLR scheduler	|   30  	|   66.36  	|
+| CNN on MNIST dataset with random weights, with a CosineAnnealingLR scheduler.	 	|   30  	|   99.39  	|
+| CNN on MNIST dataset with pretrained weights, with a CosineAnnealingLR scheduler|   30  	|   99.34 	|
 
 ## Task2_3
 Change directory to Task2_3 using `cd task2_3`
@@ -64,10 +63,6 @@ Change directory to Task2_3 using `cd task2_3`
 |---------------------------------------------------------------------------------------	|:--------:	|
 | CNN on MIDAS Dataset with random weights.                                             	|    1.74      	|
 | CNN on MIDAS Dataset with pretrained weights of<br> MIDAS dataset containing only digits. 	|       10.32   	|
-
-### Visualization
-Graph below shows comparison in terms of model accuracy between model trained with random weights and model trained with pretrained weights
-
 
 ### Model Checkpoints
 
