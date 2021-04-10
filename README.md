@@ -1,5 +1,5 @@
-# Solution of **MIDAS Internship task 2**
-This repository contains solution for the MIDAS internship task 2.
+# Solution+Report for **MIDAS Internship task 2**
+This repository contains solution+report for the MIDAS internship task 2.
 
 ## Installation
 The model is built in PyTorch 1.8.1 and tested on Ubuntu 18.04 environment (Python3.7.10, CUDA10.1, cuDNN7.6.3).
@@ -39,11 +39,9 @@ Change directory to Task2_2 using `cd task2_2`
 ### Results
 |                                      Method                                      	| Epochs 	|  LR  	| Accuracy 	|
 |--------------------------------------------------------------------------------	|:------:	|:------:	|:--------:	|
-| CNN on MIDAS dataset containing only digits, without a scheduler.                	|   30   	|   1  	|   66.36  	|
-| CNN on MIDAS dataset containing only digits, with a CosineAnnealingLR scheduler. 	|   30   	|   1  	|   66.56  	|
-| CNN on MNIST dataset with random weights, without a scheduler.                   	|   30   	|   1  	|   99.31  	|
-| CNN on MNIST dataset with random weights, with a CosineAnnealingLR scheduler.                   	|   30   	|   1  	|   99.39   	|
-| CNN on MNIST dataset with pretrained weights, without a scheduler.               	|   30   	|   1  	|   99.33  	|
+| CNN on MIDAS dataset containing only digits, with a CosineAnnealingLR scheduler	|   30   	|   1  	|   66.36  	|
+| CNN on MNIST dataset with random weights, with a CosineAnnealingLR scheduler.	 	|   30   	|   1  	|   99.39  	|
+| CNN on MNIST dataset with pretrained weights, with a CosineAnnealingLR scheduler|   30   	|   1  	|   99.34 	|
 
 ## Task2_3
 Change directory to Task2_3 using `cd task2_3`
