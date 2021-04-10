@@ -3,6 +3,7 @@ from glob import glob
 from natsort import natsorted
 import argparse
 from tqdm import tqdm
+import shutil
 
 parser = argparse.ArgumentParser(description='Split Midas task 2 dataset')
 parser.add_argument(
