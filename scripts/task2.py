@@ -25,11 +25,11 @@ folders = (natsorted(glob(args.subtask1+"train/*")))
 
 folders = folders[0:10]
 
-os.makedirs("./subtask2/train",exist_ok=True)
+os.makedirs("../subtask2/train",exist_ok=True)
 
 for folder in folders:
     print(folder)
-    train_destination = f"./subtask2/train/{os.path.split(folder)[-1]}"
+    train_destination = f"../subtask2/train/{os.path.split(folder)[-1]}"
     shutil.copytree(folder,train_destination)
 
 
