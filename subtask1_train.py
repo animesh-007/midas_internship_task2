@@ -69,7 +69,7 @@ def main():
                         help='Path for saving the checkpoint')
     parser.add_argument('--load_ckpt', type=str, default="./checkpoints", metavar='load_ckpt',
                         help='For loading checkpoint')
-    parser.add_argument('--path', type=str, default="./subtask1", metavar='path',
+    parser.add_argument('--path', type=str, default="./subtask1_data", metavar='path',
                         help='For Training the model on midas task 1 split set')
 
     args = parser.parse_args()
