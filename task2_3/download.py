@@ -17,4 +17,4 @@ args = parser.parse_args()
 
 os.system("wget -c https://www.dropbox.com/s/otc12z2w7f7xm8z/mnistTask3.zip?dl=0")
 os.system(f"unzip mnistTask3.zip?dl=0 -d {args.path}")
-os.system("rm trainPart1.zip")
+os.system("rm mnistTask3.zip?dl=0")
