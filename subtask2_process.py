@@ -9,14 +9,14 @@ parser.add_argument(
         "--subtask2",
         nargs="?",
         type=str,
-        default="../subtask2/train",
+        default="./subtask2_data/train",
         help="Path to store the dataset",
     )
 parser.add_argument(
         "--subtask1",
         nargs="?",
         type=str,
-        default="../subtask1/train",
+        default="../subtask1_downloadeddata/train",
         help="Path to the subtask1 dataset",
     )
 args = parser.parse_args()
