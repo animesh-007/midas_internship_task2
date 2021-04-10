@@ -9,7 +9,7 @@ parser.add_argument(
         "--path",
         nargs="?",
         type=str,
-        default="../subtask1",
+        default="./subtask1",
         help="Path to store the dataset",
     )
 args = parser.parse_args()
@@ -34,7 +34,5 @@ os.system("rm trainPart1.zip")
 # Renaming folder to MNISt classes
 foldernames = natsorted(glob(args.path+"/train/*"))
 
-
 for folder, classname in tqdm(zip(foldernames,classes)):
-#    print(folder,classname)
     os.renames(folder,(args.path + "/train/" + classname))
