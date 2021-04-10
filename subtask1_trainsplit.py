@@ -13,9 +13,17 @@ parser.add_argument(
         "--path",
         nargs="?",
         type=str,
+        default="./subtask1_downloadeddata",
+        help="Path to the dataset and splitting in same folder",
+    )
+parser.add_argument(
+        "--path2",
+        nargs="?",
+        type=str,
         default="./subtask1_data",
         help="Path to the dataset and splitting in same folder",
     )
+
 args = parser.parse_args()
 path = args.path + "/train/*"
 
@@ -28,8 +36,8 @@ for folder in tqdm(glob(path)):
     train_filenames = files[:split_1]
     val_filenames = files[split_1:]
     folder_name = os.path.split(folder)[-1]
-    train_destination = f"{args.path}/processed/train/{folder_name}"
-    val_destination = f"{args.path}/processed/val/{folder_name}"
+    train_destination = f"{args.path2}/train/{folder_name}"
+    val_destination = f"{args.path2}/val/{folder_name}"
     
     os.makedirs(train_destination,exist_ok=True)
     os.makedirs(val_destination,exist_ok=True)
