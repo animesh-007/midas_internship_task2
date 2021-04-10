@@ -28,9 +28,9 @@ cd ../
 
 ### Training
 - For Training the model from scratch on the SubTask1 dataset.
-- Run `train.py`
+- Run `subtask1_train.py`
 ```
-python train.py 
+python subtask1_train.py 
 ```
 ### Results
 |                Method                	| Epochs 	|  LR  	| Accuracy 	|
@@ -41,7 +41,7 @@ python train.py
 ## SubTask 2
 
 ### Prepare data
-- Run `task2.py` for creating a subset from SubTask 1 containing only images with digits labels in the `./subtask2` directory.
+- Run `subtask2_task.py` for creating a subset from SubTask 1 containing only images with digits labels in the `./subtask2` directory.
 ```
 cd scripts
 python task2.py
@@ -49,9 +49,9 @@ python task2.py
 
 ### Training
 - For Training the model from scratch on the SubTask2 dataset.
-- Run `train.py`
+- Run `subtask2_train.py`
 ```
-python train.py 
+python subtask2_train.py 
 ```
 
 ### Results
@@ -74,9 +74,9 @@ python task3.py
 
 ### Training
 - For Training the model from scratch on the SubTask3 dataset.
-- Run `train.py`
+- Run `subtask3_train.py`
 ```
-python train.py 
+python subtask3_train.py 
 ```
 
 ### Results
