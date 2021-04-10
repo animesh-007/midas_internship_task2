@@ -16,12 +16,12 @@ parser.add_argument(
         "--subtask1",
         nargs="?",
         type=str,
-        default="../subtask1",
+        default="../subtask1/train",
         help="Path to the subtask1 dataset",
     )
 args = parser.parse_args()
 
-folders = (natsorted(glob(args.subtask1+"/train/*")))
+folders = (natsorted(glob(args.subtask1+"/*")))
 
 folders = folders[0:10]
 
