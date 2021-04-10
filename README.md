@@ -11,46 +11,30 @@ conda activate pytorch1.8
 conda install pytorch=1.8.1 torchvision=0.9.1 cudatoolkit=10.1 -c pytorch
 pip install requirements.txt
 ```
-## SubTask1
-
+## Task2_1
+Change directory to Task2_1 using `cd task2_1`
 ### Prepare data
-- Download data using task1.py.
-```
-python subtask1_download.py
-```
-- It will download data for the SubTask 1 in the `./subtask1` directory and will also rename the folders according to the labels in the MNIST.
-- Run `split_dataset.py` for splitting the dataset in 80:20 train-val ratio for training and validating the trained model on the given dataset.
-```
-python subtask1_trainsplit.py
-```
+- Download data using `python download.py`
+- It will download data for the Task2_1 in the `./downloadeddata` directory and will also rename the folders according to the labels in the MNIST.
+- Run `python split.py` for splitting the dataset in 80:20 train-val ratio for training and validating the trained model on the given dataset and save the data in `./data`.
 
 ### Training
-- For Training the model from scratch on the SubTask1 dataset.
-- Run `subtask1_train.py`
-```
-python subtask1_train.py 
-```
+- For Training the model from scratch on the Task2_1 dataset. Run `python train.py`
+
 ### Results
 |                Method                	| Epochs 	|  LR  	| Accuracy 	|
 |:------------------------------------:	|:------:	|------	|:--------:	|
 | CNN without Scheduler                	|   30   	|   1  	|  67.94  	|
 | CNN with CosineAnnealingLR Scheduler 	|   30   	|   1  	|  68.75  	|
 
-## SubTask 2
+## Task2_2
+Change directory to Task2_2 using `cd task2_2`
 
 ### Prepare data
-- Run `subtask2_process.py` for creating a subset from SubTask 1 containing only images with digits labels in the `./subtask2` directory.
-```
-cd scripts
-python task2.py
-```
+- Run `python process.py` for creating a subset from Task2_1 containing only images with digits labels in the `./data` directory.
 
 ### Training
-- For Training the model from scratch on the SubTask2 dataset.
-- Run `subtask2_train.py`
-```
-python subtask2_train.py 
-```
+- For Training the model from scratch on the Task2_3 dataset. Run `python train.py`
 
 ### Results
 |                                      Method                                      	| Epochs 	|  LR  	| Accuracy 	|
@@ -61,14 +45,14 @@ python subtask2_train.py
 | CNN on MNIST dataset with random weights, with a CosineAnnealingLR scheduler.                   	|   30   	|   1  	|   99.39   	|
 | CNN on MNIST dataset with pretrained weights, without a scheduler.               	|   30   	|   1  	|   99.33  	|
 
-## SubTask 3
+## Task2_3
+Change directory to Task2_3 using `cd task2_3`
 
 ### Prepare data
-- Run `subtask3_download.py` for for downloading the data in the `./subtask3_data` directory.
+- Run `python download.py` for for downloading the data in the `./data` directory.
 
 ### Training
-- For Training the model from scratch on the SubTask3 dataset.
-- Run `subtask3_train.py`
+- For Training the model from scratch on the Task2_3 dataset. Run `python train.py`
 
 
 ### Results
