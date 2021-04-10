@@ -11,6 +11,9 @@ conda activate pytorch1.8
 conda install pytorch=1.8.1 torchvision=0.9.1 cudatoolkit=10.1 -c pytorch
 pip install requirements.txt
 ```
+## Network Architecture
+The network architecture below is used for all the 3 subtasks by changing the last layer of the architecture.
+
 ## Task2_1
 Change directory to Task2_1 using `cd task2_1`
 ### Prepare data
@@ -43,7 +46,7 @@ Change directory to Task2_2 using `cd task2_2`
 | CNN on MNIST dataset with random weights, with a CosineAnnealingLR scheduler.	 	|   30   	|   1  	|   99.39  	|
 | CNN on MNIST dataset with pretrained weights, with a CosineAnnealingLR scheduler|   30   	|   1  	|   99.34 	|
 
-## Visualization
+### Visualization
 Graph below shows comparison in terms of model accuracy between model trained with random weights and model trained with pretrained weights
 
 ## Task2_3
@@ -62,7 +65,7 @@ Change directory to Task2_3 using `cd task2_3`
 | CNN on MIDAS Dataset with random weights.                                             	|    1.74      	|
 | CNN on MIDAS Dataset with pretrained weights of<br> MIDAS dataset containing only digits. 	|       10.32   	|
 
-## Visualization
+### Visualization
 Graph below shows comparison in terms of model accuracy between model trained with random weights and model trained with pretrained weights
 
 
