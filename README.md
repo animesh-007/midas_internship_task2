@@ -16,6 +16,19 @@ The network architecture below is used for all the 3 subtasks by changing the la
 
 <img src="https://github.com/animesh-007/midas_internship_task2/blob/master/images/architecture.png">
 
+## Model Checkpoints
+
+Pre-trained network weights for each task are uploaded on this link: https://drive.google.com/drive/folders/1CZsiAQ9WqtwY1SMPmv04MGeIOUETbeY7?usp=sharing <br>
+```
+Drive directory structure:
+subtask1_checkpoint_model_best.pth.tar : weights for task2_1 
+subtask2.1_checkpoint_model_best.pth.tar : weights for task2_2_1 
+subtask2.2_checkpoint_model_best.pth.tar : weights for task2_2_2 
+subtask2.3_checkpoint_model_best.pth.tar : weights for task2_2_3 
+subtask3.1_checkpoint_model_best.pth.tar : weights for task2_3_1 
+subtask3.2_checkpoint_model_best.pth.tar : weights for task2_3_2 
+```
+
 ## Task2_1
 Change directory to Task2_1 using `cd task2_1`
 ### Prepare data
@@ -63,6 +76,4 @@ Change directory to Task2_3 using `cd task2_3`
 |---------------------------------------------------------------------------------------	|:--------:	|
 | CNN on MIDAS Dataset with random weights.                                             	|    1.74      	|
 | CNN on MIDAS Dataset with pretrained weights of<br> MIDAS dataset containing only digits. 	|       10.32   	|
-
-### Model Checkpoints
 
