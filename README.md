@@ -16,14 +16,12 @@ pip install requirements.txt
 ### Prepare data
 - Download data using task1.py.
 ```
-cd scripts
-python task1.py
+python subtask1_download.py
 ```
 - It will download data for the SubTask 1 in the `./subtask1` directory and will also rename the folders according to the labels in the MNIST.
 - Run `split_dataset.py` for splitting the dataset in 80:20 train-val ratio for training and validating the trained model on the given dataset.
 ```
-python split_dataset.py
-cd ../
+python subtask1_trainsplit.py
 ```
 
 ### Training
@@ -41,7 +39,7 @@ python subtask1_train.py
 ## SubTask 2
 
 ### Prepare data
-- Run `subtask2_task.py` for creating a subset from SubTask 1 containing only images with digits labels in the `./subtask2` directory.
+- Run `subtask2_process.py` for creating a subset from SubTask 1 containing only images with digits labels in the `./subtask2` directory.
 ```
 cd scripts
 python task2.py
@@ -66,18 +64,12 @@ python subtask2_train.py
 ## SubTask 3
 
 ### Prepare data
-- Run `task3.py` for for downloading the data in the `./subtask3` directory.
-```
-cd scripts
-python task3.py
-```
+- Run `subtask3_download.py` for for downloading the data in the `./subtask3_data` directory.
 
 ### Training
 - For Training the model from scratch on the SubTask3 dataset.
 - Run `subtask3_train.py`
-```
-python subtask3_train.py 
-```
+
 
 ### Results
 | Method                                                                                	| Accuracy 	|
