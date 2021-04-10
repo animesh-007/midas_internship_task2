@@ -13,14 +13,14 @@ parser.add_argument(
         "--path",
         nargs="?",
         type=str,
-        default="./subtask1_downloadeddata",
+        default="./downloadeddata",
         help="Path to the dataset and splitting in same folder",
     )
 parser.add_argument(
         "--path2",
         nargs="?",
         type=str,
-        default="./subtask1_data",
+        default="./data",
         help="Path to the dataset and splitting in same folder",
     )
 

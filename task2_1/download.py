@@ -9,7 +9,7 @@ parser.add_argument(
         "--path",
         nargs="?",
         type=str,
-        default="./subtask1_downloadeddata",
+        default="./downloadeddata",
         help="Path to store the dataset",
     )
 args = parser.parse_args()
